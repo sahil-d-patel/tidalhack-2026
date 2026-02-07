@@ -2,6 +2,9 @@ import { ParallaxBackground } from './components/background/ParallaxBackground'
 import { SnowParticles } from './components/background/SnowParticles'
 import InfiniteCanvas from './components/canvas/InfiniteCanvas'
 import { DemoToggle } from './components/ui/DemoToggle'
+import { ThermometerHUD } from './components/ui/ThermometerHUD'
+import { QuizCard } from './components/ui/QuizCard'
+import { FrostOverlay } from './components/ui/FrostOverlay'
 import { useCanvasStore } from './state/canvasStore'
 
 function App() {
@@ -25,6 +28,15 @@ function App() {
 
       {/* Layer 10: Canvas */}
       <InfiniteCanvas />
+
+      {/* Layer 30: Frost Overlay */}
+      <FrostOverlay />
+
+      {/* Layer 40: Quiz Card */}
+      <QuizCard />
+
+      {/* Layer 40: Thermometer HUD */}
+      <ThermometerHUD />
 
       {/* Layer 40: HUD overlay */}
       <div
