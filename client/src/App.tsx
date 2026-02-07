@@ -20,7 +20,7 @@ function App() {
           FRACTAL
         </h1>
         <p className="text-xs font-body text-frost/40">
-          Interactive Branching Music Creation
+          Interactive Knowledge Explorer
         </p>
       </div>
 
