@@ -4,6 +4,7 @@ import cors from 'cors';
 import { config } from './config/env.js';
 import { connectDB } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import apiRoutes from './routes/api.js';
 
 const app = express();
 
@@ -14,8 +15,8 @@ app.use(cors({
   credentials: true
 }));
 
-// Routes will be mounted here
-// app.use('/api', apiRoutes);
+// API routes
+app.use('/api', apiRoutes);
 
 // Error handler must be last
 app.use(errorHandler);
