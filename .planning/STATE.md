@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Phase: 4 of 4 (Polish & Demo Prep) — In progress
-Plan: 1 of 3 in phase
+Plan: 2 of 3 in phase
 Status: In progress
-Last activity: 2026-02-07 — Completed 04-01-PLAN.md (Frosted Glass & Snowflake Spinner)
+Last activity: 2026-02-07 — Completed 04-02-PLAN.md (Ambient Sound Design)
 
-Progress: [████████░░] 80%
+Progress: [████████░░] 89%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 2.9 min
-- Total execution time: 0.61 hours
+- Total plans completed: 9
+- Average duration: 2.7 min
+- Total execution time: 0.65 hours
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [████████░░] 80%
 | 1 | 3 | 7 min | 2.3 min |
 | 2 | 2 | 9 min | 4.5 min |
 | 3 | 2 | 11 min | 5.5 min |
-| 4 | 1 | 1.4 min | 1.4 min |
+| 4 | 2 | 3.1 min | 1.6 min |
 
 **Recent Trend:**
-- Last 5 plans: 6.5 min, 2 min, 2 min, 9 min, 1.4 min
-- Trend: UI polish plans executing quickly (straightforward CSS/styling changes)
+- Last 5 plans: 2 min, 2 min, 9 min, 1.4 min, 1.7 min
+- Trend: Phase 4 executing efficiently (focused polish work, no architectural changes)
 
 *Updated after each plan completion*
 
@@ -90,6 +90,10 @@ Recent decisions affecting current work:
 - All UI cards (DemoToggle, HoverTooltip, ThermometerHUD, QuizCard) use unified frosted-glass treatment
 - SnowballNode expanding state uses snowflake spinner instead of pulse animation
 - HoverTooltip loading state shows spinning snowflake (Unicode ❄) for thematic consistency
+- Web Audio API synthesis instead of MP3 files (no external audio dependencies)
+- Sound defaults to muted (user opts in, respects autoplay policies)
+- 1.5s audio transition ramps match visual atmosphere transitions
+- Audio initialized on first user click (browser autoplay compliance)
 
 ### Pending Todos
 
@@ -106,5 +110,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Phase 4, Plan 1 complete (Frosted Glass & Snowflake Spinner)
-Resume file: .planning/phases/04-polish-demo-prep/04-02-PLAN.md (next plan)
+Stopped at: Phase 4, Plan 2 complete (Ambient Sound Design)
+Resume file: .planning/phases/04-polish-demo-prep/04-03-PLAN.md (next plan)
