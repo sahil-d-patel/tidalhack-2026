@@ -46,11 +46,11 @@ Plans:
   3. Quiz data is pre-generated and stored in node data (no second API call needed)
   4. MongoDB caching prevents redundant API calls for same topics
   5. Demo mode toggle works with pre-cached responses (no live API required)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md — Express backend with MongoDB caching, Featherless sub-topics, and Gemini quizzes/facts
+- [ ] 02-02-PLAN.md — Frontend integration: click-to-expand nodes, hover tooltips, demo mode toggle
 
 ### Phase 3: Blizzard Mode
 **Goal**: Users experience complete atmosphere shift from calm exploration to intense survival quiz
