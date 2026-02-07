@@ -73,18 +73,18 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CANV-01 | Phase 1 | Pending |
-| CANV-02 | Phase 1 | Pending |
-| CANV-03 | Phase 1 | Pending |
+| CANV-01 | Phase 1 | Complete |
+| CANV-02 | Phase 1 | Complete |
+| CANV-03 | Phase 1 | Complete |
 | CANV-04 | Phase 2 | Pending |
 | CANV-05 | Phase 2 | Pending |
-| CANV-06 | Phase 1 | Pending |
-| ATMO-01 | Phase 1 | Pending |
+| CANV-06 | Phase 1 | Complete |
+| ATMO-01 | Phase 1 | Complete |
 | ATMO-02 | Phase 3 | Pending |
 | ATMO-03 | Phase 4 | Pending |
 | ATMO-04 | Phase 4 | Pending |
-| ATMO-05 | Phase 1 | Pending |
-| ATMO-06 | Phase 1 | Pending |
+| ATMO-05 | Phase 1 | Complete |
+| ATMO-06 | Phase 1 | Complete |
 | BLIZ-01 | Phase 3 | Pending |
 | BLIZ-02 | Phase 3 | Pending |
 | BLIZ-03 | Phase 2 | Pending |
