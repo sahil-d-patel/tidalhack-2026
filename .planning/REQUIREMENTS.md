@@ -76,8 +76,8 @@
 | CANV-01 | Phase 1 | Complete |
 | CANV-02 | Phase 1 | Complete |
 | CANV-03 | Phase 1 | Complete |
-| CANV-04 | Phase 2 | Pending |
-| CANV-05 | Phase 2 | Pending |
+| CANV-04 | Phase 2 | Complete |
+| CANV-05 | Phase 2 | Complete |
 | CANV-06 | Phase 1 | Complete |
 | ATMO-01 | Phase 1 | Complete |
 | ATMO-02 | Phase 3 | Pending |
@@ -87,13 +87,13 @@
 | ATMO-06 | Phase 1 | Complete |
 | BLIZ-01 | Phase 3 | Pending |
 | BLIZ-02 | Phase 3 | Pending |
-| BLIZ-03 | Phase 2 | Pending |
+| BLIZ-03 | Phase 2 | Complete |
 | BLIZ-04 | Phase 3 | Pending |
 | BLIZ-05 | Phase 3 | Pending |
 | BLIZ-06 | Phase 3 | Pending |
 | POLI-01 | Phase 4 | Pending |
 | POLI-02 | Phase 3 | Pending |
-| POLI-03 | Phase 2 | Pending |
+| POLI-03 | Phase 2 | Complete |
 | POLI-04 | Phase 4 | Pending |
 
 **Coverage:**

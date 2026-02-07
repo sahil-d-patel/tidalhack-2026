@@ -13,7 +13,7 @@ FRACTAL transforms from a blank canvas to a polished indie game experience in 4 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Atmosphere** - Infinite canvas with moody winter base visuals
-- [ ] **Phase 2: AI Integration** - Dynamic topic branching and quiz generation with caching
+- [x] **Phase 2: AI Integration** - Dynamic topic branching and quiz generation with caching
 - [ ] **Phase 3: Blizzard Mode** - Complete gamification loop with survival mechanics
 - [ ] **Phase 4: Polish & Demo Prep** - Performance optimization and demo-ready fallbacks
 
@@ -49,8 +49,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Express backend with MongoDB caching, Featherless sub-topics, and Gemini quizzes/facts
-- [ ] 02-02-PLAN.md — Frontend integration: click-to-expand nodes, hover tooltips, demo mode toggle
+- [x] 02-01-PLAN.md — Express backend with MongoDB caching, Featherless sub-topics, and Gemini quizzes/facts
+- [x] 02-02-PLAN.md — Frontend integration: click-to-expand nodes, hover tooltips, demo mode toggle
 
 ### Phase 3: Blizzard Mode
 **Goal**: Users experience complete atmosphere shift from calm exploration to intense survival quiz
@@ -93,6 +93,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Atmosphere | 3/3 | ✓ Complete | 2026-02-07 |
-| 2. AI Integration | 0/2 | Not started | - |
+| 2. AI Integration | 2/2 | ✓ Complete | 2026-02-07 |
 | 3. Blizzard Mode | 0/2 | Not started | - |
 | 4. Polish & Demo Prep | 0/2 | Not started | - |
