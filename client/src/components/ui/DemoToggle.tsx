@@ -5,7 +5,7 @@ export function DemoToggle() {
   const toggleDemoMode = useCanvasStore((state) => state.toggleDemoMode)
 
   return (
-    <div className="bg-slate-800/60 backdrop-blur-sm rounded-lg px-3 py-1.5 flex items-center gap-2">
+    <div className="frosted-glass rounded-lg px-3 py-1.5 flex items-center gap-2">
       <span className="text-xs font-body text-frost/60">Demo Mode</span>
       <button
         onClick={toggleDemoMode}

@@ -37,7 +37,7 @@ export const ThermometerHUD = () => {
       style={{ zIndex: 'var(--z-hud)' }}
     >
       {/* Thermometer container */}
-      <div className="relative w-8 h-48 bg-slate-800/80 backdrop-blur-sm rounded-full border border-slate-600/50 overflow-hidden flex flex-col-reverse">
+      <div className="relative w-8 h-48 frosted-glass rounded-full overflow-hidden flex flex-col-reverse">
         {/* Tick marks */}
         <div className="absolute inset-0 flex flex-col justify-between py-1">
           {[0, 25, 50, 75, 100].map((tick) => (

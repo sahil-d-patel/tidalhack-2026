@@ -88,7 +88,7 @@ const SnowballNode = React.memo((props: any) => {
       className={`relative rounded-2xl bg-white/90 px-5 py-3 border
                  text-slate-700 font-body text-sm
                  transition-all duration-200
-                 ${isThisNodeExpanding ? 'animate-pulse' : ''}
+                 ${isThisNodeExpanding ? 'animate-snowflake-spin' : ''}
                  ${!isExpanded && !isThisNodeExpanding ? 'hover:scale-105 hover:shadow-lg' : ''}
                  ${isExpanded ? 'border-amber-300/50 bg-white/80' : 'border-slate-200/50'}
                  ${isBlizzardActive ? 'ring-2 ring-blue-400/60 animate-pulse' : ''}`}

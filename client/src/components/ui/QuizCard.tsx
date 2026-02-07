@@ -49,7 +49,7 @@ export const QuizCard = () => {
         className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-lg w-full px-4"
         style={{ zIndex: 'var(--z-hud)' }}
       >
-        <div className="bg-slate-900/90 backdrop-blur-md border border-slate-600/50 rounded-2xl p-8 shadow-2xl">
+        <div className="frosted-glass rounded-2xl p-8">
           {/* Topic name */}
           <div className="text-frost/60 text-sm font-body mb-2">{topic}</div>
 

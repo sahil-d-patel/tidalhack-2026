@@ -11,11 +11,10 @@ export function HoverTooltip({ fact, isLoading }: HoverTooltipProps) {
       style={{ pointerEvents: 'none' }}
     >
       <div
-        className="bg-slate-800/95 text-frost text-xs rounded-lg px-3 py-2
-                   max-w-[250px] shadow-lg backdrop-blur-sm border border-slate-700/50"
+        className="frosted-glass text-frost text-xs rounded-lg px-3 py-2 max-w-[250px] shadow-lg"
       >
         {isLoading ? (
-          <span className="animate-pulse text-frost/60">Loading...</span>
+          <span className="inline-block animate-snowflake-spin text-frost/60 text-base">&#10052;</span>
         ) : (
           <span>{fact}</span>
         )}
@@ -23,7 +22,7 @@ export function HoverTooltip({ fact, isLoading }: HoverTooltipProps) {
       {/* Tooltip arrow */}
       <div
         className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2
-                   bg-slate-800/95 border-l border-t border-slate-700/50
+                   bg-slate-900/70 border-l border-t border-slate-400/30
                    rotate-45"
       />
     </div>
