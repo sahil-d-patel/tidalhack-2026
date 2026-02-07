@@ -80,9 +80,9 @@
 | CANV-05 | Phase 2 | Pending |
 | CANV-06 | Phase 1 | Pending |
 | ATMO-01 | Phase 1 | Pending |
-| ATMO-02 | Phase 1 | Pending |
-| ATMO-03 | Phase 1 | Pending |
-| ATMO-04 | Phase 3 | Pending |
+| ATMO-02 | Phase 3 | Pending |
+| ATMO-03 | Phase 4 | Pending |
+| ATMO-04 | Phase 4 | Pending |
 | ATMO-05 | Phase 1 | Pending |
 | ATMO-06 | Phase 1 | Pending |
 | BLIZ-01 | Phase 3 | Pending |
@@ -103,4 +103,4 @@
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-07 after initial definition*
+*Last updated: 2026-02-07 after roadmap creation*
