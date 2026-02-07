@@ -81,8 +81,8 @@
 | CANV-06 | Phase 1 | Complete |
 | ATMO-01 | Phase 1 | Complete |
 | ATMO-02 | Phase 3 | Complete |
-| ATMO-03 | Phase 4 | Pending |
-| ATMO-04 | Phase 4 | Pending |
+| ATMO-03 | Phase 4 | Complete |
+| ATMO-04 | Phase 4 | Complete |
 | ATMO-05 | Phase 1 | Complete |
 | ATMO-06 | Phase 1 | Complete |
 | BLIZ-01 | Phase 3 | Complete |
@@ -91,10 +91,10 @@
 | BLIZ-04 | Phase 3 | Complete |
 | BLIZ-05 | Phase 3 | Complete |
 | BLIZ-06 | Phase 3 | Complete |
-| POLI-01 | Phase 4 | Pending |
+| POLI-01 | Phase 4 | Complete |
 | POLI-02 | Phase 3 | Complete |
 | POLI-03 | Phase 2 | Complete |
-| POLI-04 | Phase 4 | Pending |
+| POLI-04 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 22 total
