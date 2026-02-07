@@ -1,12 +1,27 @@
 import { ParallaxBackground } from './components/background/ParallaxBackground'
+import { SnowParticles } from './components/background/SnowParticles'
 import InfiniteCanvas from './components/canvas/InfiniteCanvas'
 import { DemoToggle } from './components/ui/DemoToggle'
+import { useCanvasStore } from './state/canvasStore'
 
 function App() {
+  const gameMode = useCanvasStore((state) => state.gameMode)
+
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-background-dark">
       {/* Layer 0: Background */}
       <ParallaxBackground />
+
+      {/* Layer 20: Snow Particles */}
+      <SnowParticles intensity={gameMode === 'blizzard' ? 'blizzard' : 'calm'} />
+
+      {/* Layer 30: Vignette Overlay */}
+      <div
+        className={`fixed inset-0 pointer-events-none ${
+          gameMode === 'blizzard' ? 'blizzard-vignette' : ''
+        }`}
+        style={{ zIndex: 'var(--z-overlay)' }}
+      />
 
       {/* Layer 10: Canvas */}
       <InfiniteCanvas />
