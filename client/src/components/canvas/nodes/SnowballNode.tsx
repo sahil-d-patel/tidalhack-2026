@@ -24,11 +24,16 @@ const SnowballNode = React.memo((props: any) => {
   const expandedNodeIds = useCanvasStore((state) => state.expandedNodeIds)
   const hoveredFact = useCanvasStore((state) => state.hoveredFact)
   const isLoadingFact = useCanvasStore((state) => state.isLoadingFact)
+  const gameMode = useCanvasStore((state) => state.gameMode)
+  const enterBlizzard = useCanvasStore((state) => state.enterBlizzard)
+  const blizzardQuiz = useCanvasStore((state) => state.blizzardQuiz)
 
   const isThisNodeExpanding = isExpanding && expandingNodeId === id
   const isExpanded = expandedNodeIds.includes(id)
   const hasQuiz = data.quiz !== undefined && data.quiz !== null
   const showTooltip = hoveredFact?.nodeId === id
+  const isBlizzardActive = blizzardQuiz?.nodeId === id
+  const showBraveTheStorm = hasQuiz && gameMode === 'peace' && !isExpanding
 
   // Handle click to expand
   const handleClick = (e: React.MouseEvent) => {
@@ -70,6 +75,14 @@ const SnowballNode = React.memo((props: any) => {
     return 'pointer'
   }
 
+  // Handle "Brave the Storm" click
+  const handleBlizzardClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (data.quiz) {
+      enterBlizzard(id, data.label, data.quiz)
+    }
+  }
+
   return (
     <div
       className={`relative rounded-2xl bg-white/90 px-5 py-3 border
@@ -77,7 +90,8 @@ const SnowballNode = React.memo((props: any) => {
                  transition-all duration-200
                  ${isThisNodeExpanding ? 'animate-pulse' : ''}
                  ${!isExpanded && !isThisNodeExpanding ? 'hover:scale-105 hover:shadow-lg' : ''}
-                 ${isExpanded ? 'border-amber-300/50 bg-white/80' : 'border-slate-200/50'}`}
+                 ${isExpanded ? 'border-amber-300/50 bg-white/80' : 'border-slate-200/50'}
+                 ${isBlizzardActive ? 'ring-2 ring-blue-400/60 animate-pulse' : ''}`}
       style={{
         boxShadow: 'inset 0 2px 8px rgba(191,219,254,0.3)',
         cursor: getCursor(),
@@ -93,12 +107,25 @@ const SnowballNode = React.memo((props: any) => {
       />
 
       {/* Node label */}
-      <div className="flex items-center gap-1.5">
-        <span>{data.label}</span>
-        {hasQuiz && (
-          <span className="text-xs text-blue-400" title="Has quiz">
-            ❄
-          </span>
+      <div className="flex flex-col items-center gap-1">
+        <div className="flex items-center gap-1.5">
+          <span>{data.label}</span>
+          {hasQuiz && (
+            <span className="text-xs text-blue-400" title="Has quiz">
+              ❄
+            </span>
+          )}
+        </div>
+
+        {/* Brave the Storm button */}
+        {showBraveTheStorm && (
+          <button
+            onClick={handleBlizzardClick}
+            className="bg-blue-600/80 hover:bg-blue-500 text-white text-[10px] font-body px-2 py-0.5 rounded-full mt-1 transition-all flex items-center gap-1"
+          >
+            <span>❄</span>
+            <span>Brave the Storm</span>
+          </button>
         )}
       </div>
 
