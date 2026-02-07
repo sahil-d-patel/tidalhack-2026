@@ -7,6 +7,7 @@ import {
   OnNodesChange,
   OnEdgesChange,
 } from '@xyflow/react'
+import { API_BASE, DEMO_DATA, SubTopic } from '../config/api'
 
 // Seed data: Tree structure of The Universe and its branches
 const initialNodes: Node[] = [
@@ -68,6 +69,21 @@ type CanvasStore = {
   edges: Edge[]
   onNodesChange: OnNodesChange
   onEdgesChange: OnEdgesChange
+
+  // AI interaction state
+  isExpanding: boolean
+  expandingNodeId: string | null
+  hoveredFact: { nodeId: string; fact: string } | null
+  isLoadingFact: boolean
+  demoMode: boolean
+  error: string | null
+  expandedNodeIds: string[] // Zustand serializes Set as array
+
+  // Actions
+  toggleDemoMode: () => void
+  expandNode: (nodeId: string, topic: string) => Promise<void>
+  fetchFunFact: (nodeId: string, topic: string) => Promise<void>
+  clearHoveredFact: () => void
 }
 
 export const useCanvasStore = create<CanvasStore>((set, get) => ({
@@ -82,5 +98,159 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
     set({
       edges: applyEdgeChanges(changes, get().edges),
     })
+  },
+
+  // State
+  isExpanding: false,
+  expandingNodeId: null,
+  hoveredFact: null,
+  isLoadingFact: false,
+  demoMode: false,
+  error: null,
+  expandedNodeIds: [],
+
+  // Toggle demo mode
+  toggleDemoMode: () => {
+    set((state) => ({ demoMode: !state.demoMode }))
+  },
+
+  // Expand node to show 4 child sub-topics
+  expandNode: async (nodeId: string, topic: string) => {
+    const { expandedNodeIds, nodes, edges, demoMode } = get()
+
+    // Prevent double-expand
+    if (expandedNodeIds.includes(nodeId)) {
+      return
+    }
+
+    set({ isExpanding: true, expandingNodeId: nodeId, error: null })
+
+    try {
+      let subTopics: SubTopic[]
+
+      if (demoMode) {
+        // Use pre-cached demo data
+        const demoData = DEMO_DATA[topic]
+        if (!demoData) {
+          throw new Error(`No demo data found for topic: ${topic}`)
+        }
+        subTopics = demoData.subTopics
+      } else {
+        // Fetch from live API
+        const response = await fetch(`${API_BASE}/scout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
+
+        const data = await response.json()
+        subTopics = data.data.subTopics
+      }
+
+      // Find parent node position
+      const parentNode = nodes.find((n) => n.id === nodeId)
+      if (!parentNode) {
+        throw new Error(`Parent node ${nodeId} not found`)
+      }
+
+      const parentX = parentNode.position.x
+      const parentY = parentNode.position.y
+
+      // Generate new nodes and edges
+      const newNodes: Node[] = subTopics.map((subTopic, i) => ({
+        id: `${nodeId}-${i}`,
+        type: 'snowball',
+        position: {
+          x: parentX + (i - 1.5) * 200,
+          y: parentY + 180,
+        },
+        data: {
+          label: subTopic.label,
+          quiz: subTopic.quiz,
+          parentTopic: topic,
+        },
+      }))
+
+      const newEdges: Edge[] = subTopics.map((_, i) => ({
+        id: `e${nodeId}-${nodeId}-${i}`,
+        source: nodeId,
+        target: `${nodeId}-${i}`,
+        type: 'footprint',
+      }))
+
+      // Append to existing nodes/edges
+      set({
+        nodes: [...nodes, ...newNodes],
+        edges: [...edges, ...newEdges],
+        expandedNodeIds: [...expandedNodeIds, nodeId],
+        isExpanding: false,
+        expandingNodeId: null,
+      })
+    } catch (error) {
+      console.error('Error expanding node:', error)
+      set({
+        error: error instanceof Error ? error.message : 'Failed to expand node',
+        isExpanding: false,
+        expandingNodeId: null,
+      })
+    }
+  },
+
+  // Fetch fun fact for hovered node
+  fetchFunFact: async (nodeId: string, topic: string) => {
+    const { demoMode } = get()
+
+    set({ isLoadingFact: true })
+
+    try {
+      let funFact: string
+
+      if (demoMode) {
+        // Use pre-cached demo data
+        const demoData = DEMO_DATA[topic]
+        if (demoData) {
+          funFact = demoData.funFact
+        } else {
+          funFact = 'Explore this fascinating topic by clicking to expand!'
+        }
+      } else {
+        // Fetch from live API
+        const response = await fetch(`${API_BASE}/hover`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
+
+        const data = await response.json()
+        funFact = data.data.funFact
+      }
+
+      set({
+        hoveredFact: { nodeId, fact: funFact },
+        isLoadingFact: false,
+      })
+    } catch (error) {
+      console.error('Error fetching fun fact:', error)
+      set({
+        hoveredFact: {
+          nodeId,
+          fact: 'Click to explore this topic further!',
+        },
+        isLoadingFact: false,
+      })
+    }
+  },
+
+  // Clear hovered fact tooltip
+  clearHoveredFact: () => {
+    set({ hoveredFact: null })
   },
 }))
