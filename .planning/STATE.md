@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** The visual experience must feel like a polished indie game, not a hackathon project.
-**Current focus:** Phase 3 - Blizzard Mode
+**Current focus:** Phase 4 - Polish & Demo Prep
 
 ## Current Position
 
-Phase: 3 of 4 (Blizzard Mode) — Phase complete
-Plan: 2 of 2 in phase
-Status: Phase complete
-Last activity: 2026-02-07 — Completed 03-02-PLAN.md (Blizzard Mode UI)
+Phase: 4 of 4 (Polish & Demo Prep) — In progress
+Plan: 1 of 3 in phase
+Status: In progress
+Last activity: 2026-02-07 — Completed 04-01-PLAN.md (Frosted Glass & Snowflake Spinner)
 
-Progress: [███████░░░] 78%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 3.3 min
-- Total execution time: 0.38 hours
+- Total plans completed: 8
+- Average duration: 2.9 min
+- Total execution time: 0.61 hours
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: [███████░░░] 78%
 | 1 | 3 | 7 min | 2.3 min |
 | 2 | 2 | 9 min | 4.5 min |
 | 3 | 2 | 11 min | 5.5 min |
+| 4 | 1 | 1.4 min | 1.4 min |
 
 **Recent Trend:**
-- Last 5 plans: 2.5 min, 6.5 min, 2 min, 2 min, 9 min
-- Trend: Blizzard Mode UI took longer (complex component coordination)
+- Last 5 plans: 6.5 min, 2 min, 2 min, 9 min, 1.4 min
+- Trend: UI polish plans executing quickly (straightforward CSS/styling changes)
 
 *Updated after each plan completion*
 
@@ -83,6 +84,13 @@ Recent decisions affecting current work:
 - Answer feedback uses framer-motion AnimatePresence (smooth 800ms flash transitions)
 - Thermometer animations use CSS keyframes (scale-correct, shake) for performance
 
+**Phase 4 (Polish & Demo Prep):**
+- Frosted glass utility class for consistent UI card styling (slate-900/70 + backdrop-blur-md)
+- Snowflake spinner animation (1.5s rotate + scale pulse) replaces generic loading animations
+- All UI cards (DemoToggle, HoverTooltip, ThermometerHUD, QuizCard) use unified frosted-glass treatment
+- SnowballNode expanding state uses snowflake spinner instead of pulse animation
+- HoverTooltip loading state shows spinning snowflake (Unicode ❄) for thematic consistency
+
 ### Pending Todos
 
 [From .planning/todos/pending/ — ideas captured during sessions]
@@ -98,5 +106,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-07
-Stopped at: Phase 3 complete (Blizzard Mode), ready for Phase 4 (Polish & Deploy)
-Resume file: .planning/phases/04-polish-deploy/ (next phase)
+Stopped at: Phase 4, Plan 1 complete (Frosted Glass & Snowflake Spinner)
+Resume file: .planning/phases/04-polish-demo-prep/04-02-PLAN.md (next plan)
