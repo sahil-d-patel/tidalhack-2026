@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Z-index layer system */
+    --z-background: 0;
+    --z-canvas: 10;
+    --z-particles: 20;
+    --z-overlay: 30;
+    --z-hud: 40;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+  }
+}
