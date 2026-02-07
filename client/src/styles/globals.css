@@ -32,11 +32,35 @@
     75% { transform: translateX(2px); }
   }
 
+  @keyframes snowflake-spin {
+    0% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(180deg) scale(1.15);
+    }
+    100% {
+      transform: rotate(360deg) scale(1);
+    }
+  }
+
   .animate-scale-correct {
     animation: scale-correct 0.3s ease-in-out;
   }
 
   .animate-shake {
     animation: shake 0.3s ease-in-out;
+  }
+
+  .animate-snowflake-spin {
+    animation: snowflake-spin 1.5s ease-in-out infinite;
+  }
+
+  .frosted-glass {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 }
