@@ -1,4 +1,4 @@
-import { BaseEdge, EdgeProps, getBezierPath } from '@xyflow/react'
+import { BaseEdge, type EdgeProps, getBezierPath } from '@xyflow/react'
 
 export default function FootprintEdge(props: EdgeProps) {
   const [edgePath] = getBezierPath({

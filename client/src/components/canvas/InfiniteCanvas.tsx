@@ -5,7 +5,8 @@ import SnowballNode from './nodes/SnowballNode'
 import FootprintEdge from './edges/FootprintEdge'
 
 // Define nodeTypes and edgeTypes OUTSIDE component to prevent re-render warnings
-const nodeTypes = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const nodeTypes: any = {
   snowball: SnowballNode,
 }
 

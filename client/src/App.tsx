@@ -1,5 +1,6 @@
 import { ParallaxBackground } from './components/background/ParallaxBackground'
 import InfiniteCanvas from './components/canvas/InfiniteCanvas'
+import { DemoToggle } from './components/ui/DemoToggle'
 
 function App() {
   return (
@@ -21,6 +22,14 @@ function App() {
         <p className="text-xs font-body text-frost/40">
           Interactive Branching Music Creation
         </p>
+      </div>
+
+      {/* Demo Mode Toggle */}
+      <div
+        className="fixed top-8 right-8 pointer-events-auto"
+        style={{ zIndex: 'var(--z-hud)' }}
+      >
+        <DemoToggle />
       </div>
     </div>
   )
