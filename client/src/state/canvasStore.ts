@@ -2,12 +2,12 @@ import { create } from 'zustand'
 import {
   applyNodeChanges,
   applyEdgeChanges,
-  Node,
-  Edge,
-  OnNodesChange,
-  OnEdgesChange,
+  type Node,
+  type Edge,
+  type OnNodesChange,
+  type OnEdgesChange,
 } from '@xyflow/react'
-import { API_BASE, DEMO_DATA, SubTopic } from '../config/api'
+import { API_BASE, DEMO_DATA, type SubTopic, type QuizData } from '../config/api'
 
 // Seed data: Tree structure of The Universe and its branches
 const initialNodes: Node[] = [
@@ -79,11 +79,21 @@ type CanvasStore = {
   error: string | null
   expandedNodeIds: string[] // Zustand serializes Set as array
 
+  // Blizzard Mode state
+  gameMode: 'peace' | 'blizzard'
+  blizzardQuiz: { nodeId: string; topic: string; quiz: QuizData; questionIndex: number } | null
+  warmth: number
+  quizResult: 'correct' | 'wrong' | null
+  blizzardComplete: boolean
+
   // Actions
   toggleDemoMode: () => void
   expandNode: (nodeId: string, topic: string) => Promise<void>
   fetchFunFact: (nodeId: string, topic: string) => Promise<void>
   clearHoveredFact: () => void
+  enterBlizzard: (nodeId: string, topic: string, quiz: QuizData) => void
+  answerQuiz: (selectedIndex: number) => void
+  exitBlizzard: () => void
 }
 
 export const useCanvasStore = create<CanvasStore>((set, get) => ({
@@ -108,6 +118,13 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
   demoMode: false,
   error: null,
   expandedNodeIds: [],
+
+  // Blizzard Mode state
+  gameMode: 'peace',
+  blizzardQuiz: null,
+  warmth: 50,
+  quizResult: null,
+  blizzardComplete: false,
 
   // Toggle demo mode
   toggleDemoMode: () => {
@@ -252,5 +269,49 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
   // Clear hovered fact tooltip
   clearHoveredFact: () => {
     set({ hoveredFact: null })
+  },
+
+  // Enter Blizzard Mode
+  enterBlizzard: (nodeId: string, topic: string, quiz: QuizData) => {
+    set({
+      gameMode: 'blizzard',
+      blizzardQuiz: { nodeId, topic, quiz, questionIndex: 0 },
+      warmth: 50,
+      blizzardComplete: false,
+      quizResult: null,
+    })
+  },
+
+  // Answer quiz question
+  answerQuiz: (selectedIndex: number) => {
+    const { blizzardQuiz, warmth } = get()
+
+    if (!blizzardQuiz) return
+
+    const isCorrect = selectedIndex === blizzardQuiz.quiz.correctIndex
+    const newWarmth = isCorrect
+      ? Math.min(100, warmth + 25)
+      : Math.max(0, warmth - 30)
+
+    set({
+      warmth: newWarmth,
+      quizResult: isCorrect ? 'correct' : 'wrong',
+      blizzardComplete: true,
+    })
+
+    // Clear quiz result after 800ms
+    setTimeout(() => {
+      set({ quizResult: null })
+    }, 800)
+  },
+
+  // Exit Blizzard Mode
+  exitBlizzard: () => {
+    set({
+      gameMode: 'peace',
+      blizzardQuiz: null,
+      quizResult: null,
+      blizzardComplete: false,
+    })
   },
 }))
