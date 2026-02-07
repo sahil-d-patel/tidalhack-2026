@@ -63,11 +63,11 @@ Plans:
   4. Correct answer produces warm flash + thermometer rises
   5. Wrong answer produces icy flash + frost overlay creeps from screen edges
   6. Mode transition animates smoothly (sky color shift, particle acceleration)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md — Blizzard Mode state, snow particles, and atmosphere transitions
+- [ ] 03-02-PLAN.md — Quiz UI, thermometer HUD, and answer feedback with frost overlay
 
 ### Phase 4: Polish & Demo Prep
 **Goal**: Demo runs flawlessly in front of judges with performance optimizations and fallback strategies
