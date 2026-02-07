@@ -86,8 +86,12 @@ type CanvasStore = {
   quizResult: 'correct' | 'wrong' | null
   blizzardComplete: boolean
 
+  // Sound state
+  soundMuted: boolean
+
   // Actions
   toggleDemoMode: () => void
+  toggleSound: () => void
   expandNode: (nodeId: string, topic: string) => Promise<void>
   fetchFunFact: (nodeId: string, topic: string) => Promise<void>
   clearHoveredFact: () => void
@@ -126,9 +130,17 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
   quizResult: null,
   blizzardComplete: false,
 
+  // Sound state
+  soundMuted: true,
+
   // Toggle demo mode
   toggleDemoMode: () => {
     set((state) => ({ demoMode: !state.demoMode }))
+  },
+
+  // Toggle sound
+  toggleSound: () => {
+    set((state) => ({ soundMuted: !state.soundMuted }))
   },
 
   // Expand node to show 4 child sub-topics
