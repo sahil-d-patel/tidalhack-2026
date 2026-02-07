@@ -29,12 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Cabin visual is always visible in background as emotional anchor
   4. Color palette (navy/slate + amber) and typography (Fredoka/Nunito) establish moody atmosphere
   5. Parallax background with 3 SVG layers (hills, trees, cabin) creates visual depth
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md — Project scaffold + Vite setup + Tailwind design system (fonts, palette, z-index layers)
+- [ ] 01-02-PLAN.md — Parallax SVG background layers (hills, trees, cabin with warm glow)
+- [ ] 01-03-PLAN.md — React Flow canvas with snowball nodes, footprint edges, and full app composition
 
 ### Phase 2: AI Integration
 **Goal**: Users can click nodes to dynamically explore AI-generated sub-topics and see contextual summaries
