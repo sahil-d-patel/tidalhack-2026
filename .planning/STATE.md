@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 Phase: 1 of 4 (Foundation & Atmosphere)
 Plan: 3 of 3 in current phase
 Status: Phase complete
-Last activity: 2026-02-07 — Completed 01-03-PLAN.md
+Last activity: 2026-02-07 — Completed 01-02-PLAN.md (all Phase 1 plans complete)
 
 Progress: [███░░░░░░░] 33%
 
@@ -31,7 +31,9 @@ Progress: [███░░░░░░░] 33%
 
 **Recent Trend:**
 - Last 5 plans: 3 min, 2 min, 2 min
-- Trend: Accelerating
+- Trend: Consistent velocity
+
+**Note:** Plans 01-02 and 01-03 executed out of order (wave 2 dependency). All Phase 1 plans now complete.
 
 *Updated after each plan completion*
 
@@ -52,6 +54,10 @@ Recent decisions affecting current work:
 - nodeTypes/edgeTypes defined outside component to prevent React Flow re-render warnings
 - React.memo on custom nodes for pan/zoom performance
 - Seed data with tree structure for immediate visual impact
+- Used inline SVG components instead of external SVG files for better React integration and performance
+- Applied CSS 3D transforms (translateZ + scale) for depth layering in static viewport context
+- Kept SVG complexity under 30 elements per layer for smooth performance
+- Embedded smoke animation CSS in CabinLayer SVG for self-contained component
 
 ### Pending Todos
 
@@ -67,6 +73,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-07T20:26:18Z
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Last session: 2026-02-07T21:27:14Z
+Stopped at: Completed 01-02-PLAN.md (Phase 1 complete - all 3 plans done)
 Resume file: None
