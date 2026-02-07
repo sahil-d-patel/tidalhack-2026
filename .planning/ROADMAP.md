@@ -79,11 +79,11 @@ Plans:
   3. Sound design with toggle works (peace: soft wind + chimes, blizzard: howling wind)
   4. Demo mode is reliable enough to present without live API dependency
   5. Full 3-minute demo narrative can be delivered without crashes or performance issues
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md — Frosted glass UI polish and custom snowflake loading animations
+- [ ] 04-02-PLAN.md — Ambient wind sound design with Web Audio API and mute toggle
 
 ## Progress
 
