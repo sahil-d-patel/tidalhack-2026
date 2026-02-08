@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(config.geminiApiKey);
 
 export async function generateFunFact(topic: string): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `Share one fascinating, concise fun fact about '${topic}' in 1-2 sentences. Make it surprising and educational. If possible, add a winter or nature metaphor.`;
 
@@ -23,7 +23,7 @@ export async function generateFunFact(topic: string): Promise<string> {
 
 export async function generateQuiz(topic: string): Promise<QuizData | null> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `Create a multiple-choice quiz question about '${topic}'. Return ONLY valid JSON with this exact structure: {"question": "...", "options": ["A", "B", "C", "D"], "correctIndex": 0}. The question should be educational and engaging. Include a winter metaphor if natural.`;
 

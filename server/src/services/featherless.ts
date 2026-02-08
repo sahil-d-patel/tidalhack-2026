@@ -24,8 +24,18 @@ export async function generateSubTopics(parentTopic: string): Promise<string[]> 
       throw new Error('Empty response from Featherless API');
     }
 
+    // Strip out <think>...</think> reasoning tags if present (common with reasoning models)
+    let cleanedContent = content.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+
+    // Extract JSON array from the response (in case there's extra text)
+    const jsonMatch = cleanedContent.match(/\[[\s\S]*?\]/);
+    if (!jsonMatch) {
+      console.warn('No JSON array found in Featherless response:', content);
+      return [];
+    }
+
     // Parse JSON array
-    const subTopics = JSON.parse(content);
+    const subTopics = JSON.parse(jsonMatch[0]);
 
     // Validate it's an array with exactly 4 items
     if (!Array.isArray(subTopics) || subTopics.length !== 4) {

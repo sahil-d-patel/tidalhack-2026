@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Handle, Position } from '@xyflow/react'
 import { useCanvasStore } from '../../../state/canvasStore'
 import { HoverTooltip } from '../../ui/HoverTooltip'
+import { MacPopup } from '../../ui/MacPopup'
 import type { QuizData } from '../../../config/api'
 
 export type SnowballNodeData = {
@@ -13,7 +14,8 @@ export type SnowballNodeData = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SnowballNode = React.memo((props: any) => {
   const { id, data } = props as { id: string; data: SnowballNodeData }
-  const [hoverTimer, setHoverTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const [showPopup, setShowPopup] = useState(false)
 
   // Select individual slices for performance
   const expandNode = useCanvasStore((state) => state.expandNode)
@@ -27,46 +29,60 @@ const SnowballNode = React.memo((props: any) => {
   const gameMode = useCanvasStore((state) => state.gameMode)
   const enterBlizzard = useCanvasStore((state) => state.enterBlizzard)
   const blizzardQuiz = useCanvasStore((state) => state.blizzardQuiz)
+  const edges = useCanvasStore((state) => state.edges)
 
   const isThisNodeExpanding = isExpanding && expandingNodeId === id
-  const isExpanded = expandedNodeIds.includes(id)
+  // Check if this node has children by looking at edges where this node is the source
+  const hasChildren = edges.some((edge) => edge.source === id)
+  const isExpanded = expandedNodeIds.includes(id) || hasChildren
   const hasQuiz = data.quiz !== undefined && data.quiz !== null
-  const showTooltip = hoveredFact?.nodeId === id
   const isBlizzardActive = blizzardQuiz?.nodeId === id
   const showBraveTheStorm = hasQuiz && gameMode === 'peace' && !isExpanding
 
-  // Handle click to expand
+  // Get the fact for this node
+  const currentFact = hoveredFact?.nodeId === id ? hoveredFact.fact : null
+
+  // Handle click to show popup (for unexpanded nodes)
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!isExpanding && !isExpanded) {
-      expandNode(id, data.label)
-    }
-  }
-
-  // Handle hover for fun fact
-  const handleMouseEnter = () => {
-    const timer = setTimeout(() => {
+    if (!isExpanding && !isExpanded && !showPopup) {
+      setShowPopup(true)
+      setIsHovered(false)
+      // Fetch the fact when opening popup
       fetchFunFact(id, data.label)
-    }, 500) // 500ms debounce
-    setHoverTimer(timer)
+    }
   }
 
-  const handleMouseLeave = () => {
-    if (hoverTimer) {
-      clearTimeout(hoverTimer)
-      setHoverTimer(null)
-    }
+  // Handle expand from popup
+  const handleExpand = () => {
+    setShowPopup(false)
+    clearHoveredFact()
+    expandNode(id, data.label)
+  }
+
+  // Handle close popup
+  const handleClosePopup = () => {
+    setShowPopup(false)
     clearHoveredFact()
   }
 
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimer) {
-        clearTimeout(hoverTimer)
-      }
+  // Handle hover
+  const handleMouseEnter = () => {
+    if (!showPopup && !isExpanded) {
+      setIsHovered(true)
     }
-  }, [hoverTimer])
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+  }
+
+  // Close popup when expanding finishes
+  useEffect(() => {
+    if (!isExpanding && showPopup) {
+      // Keep popup open after expansion finishes if still showing
+    }
+  }, [isExpanding, showPopup])
 
   // Determine cursor style
   const getCursor = () => {
@@ -130,15 +146,26 @@ const SnowballNode = React.memo((props: any) => {
       </div>
 
       {/* Expand indicator for unexpanded nodes */}
-      {!isExpanded && !isThisNodeExpanding && (
+      {!isExpanded && !isThisNodeExpanding && !showPopup && (
         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-200/80 rounded-full flex items-center justify-center text-[10px] text-slate-500">
           +
         </div>
       )}
 
-      {/* Hover tooltip */}
-      {showTooltip && hoveredFact && (
-        <HoverTooltip fact={hoveredFact.fact} isLoading={isLoadingFact} />
+      {/* Hover tooltip - simple "Click to learn more!" */}
+      {isHovered && !showPopup && !isExpanded && (
+        <HoverTooltip />
+      )}
+
+      {/* macOS-style popup with fun fact */}
+      {showPopup && (
+        <MacPopup
+          title={data.label}
+          content={currentFact || 'Loading...'}
+          isLoading={isLoadingFact}
+          onClose={handleClosePopup}
+          onExpand={handleExpand}
+        />
       )}
 
       <Handle

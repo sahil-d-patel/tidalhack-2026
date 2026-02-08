@@ -13,28 +13,36 @@ export async function getFunFact(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const cacheKey = `hover:${topic.toLowerCase().trim()}`;
+  try {
+    const cacheKey = `hover:${topic.toLowerCase().trim()}`;
 
-  // Check cache first
-  const cached = await cacheService.get(cacheKey);
-  if (cached) {
+    // Check cache first
+    const cached = await cacheService.get(cacheKey);
+    if (cached) {
+      res.json({
+        data: cached,
+        source: 'cache'
+      });
+      return;
+    }
+
+    // Generate new fun fact
+    const funFact = await generateFunFact(topic);
+
+    const responseData: HoverResponse = { funFact };
+
+    // Cache the result
+    await cacheService.set(cacheKey, 'hover', responseData);
+
     res.json({
-      data: cached,
-      source: 'cache'
+      data: responseData,
+      source: 'api'
     });
-    return;
+  } catch (error: any) {
+    console.error('Error in getFunFact:', error);
+    res.status(500).json({
+      error: 'Failed to generate fun fact',
+      message: error.message || 'Unknown error'
+    });
   }
-
-  // Generate new fun fact
-  const funFact = await generateFunFact(topic);
-
-  const responseData: HoverResponse = { funFact };
-
-  // Cache the result
-  await cacheService.set(cacheKey, 'hover', responseData);
-
-  res.json({
-    data: responseData,
-    source: 'api'
-  });
 }

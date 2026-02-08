@@ -7,12 +7,14 @@ import { SoundToggle } from './components/ui/SoundToggle'
 import { ThermometerHUD } from './components/ui/ThermometerHUD'
 import { QuizCard } from './components/ui/QuizCard'
 import { FrostOverlay } from './components/ui/FrostOverlay'
+import { WelcomeScreen } from './components/ui/WelcomeScreen'
 import { useCanvasStore } from './state/canvasStore'
 import { WindSynthesizer } from './audio/windSynth'
 
 function App() {
   const gameMode = useCanvasStore((state) => state.gameMode)
   const soundMuted = useCanvasStore((state) => state.soundMuted)
+  const rootTopic = useCanvasStore((state) => state.rootTopic)
   const windRef = useRef<WindSynthesizer | null>(null)
 
   // Initialize wind synth on first user interaction
@@ -54,9 +56,8 @@ function App() {
 
       {/* Layer 30: Vignette Overlay */}
       <div
-        className={`fixed inset-0 pointer-events-none ${
-          gameMode === 'blizzard' ? 'blizzard-vignette' : ''
-        }`}
+        className={`fixed inset-0 pointer-events-none ${gameMode === 'blizzard' ? 'blizzard-vignette' : ''
+          }`}
         style={{ zIndex: 'var(--z-overlay)' }}
       />
 
@@ -93,8 +94,12 @@ function App() {
         <SoundToggle />
         <DemoToggle />
       </div>
+
+      {/* Welcome Screen - shown when no root topic is set */}
+      {!rootTopic && <WelcomeScreen />}
     </div>
   )
 }
 
 export default App
+

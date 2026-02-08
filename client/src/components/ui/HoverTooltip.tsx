@@ -1,9 +1,4 @@
-type HoverTooltipProps = {
-  fact: string
-  isLoading: boolean
-}
-
-export function HoverTooltip({ fact, isLoading }: HoverTooltipProps) {
+export function HoverTooltip() {
   return (
     <div
       className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50
@@ -11,13 +6,12 @@ export function HoverTooltip({ fact, isLoading }: HoverTooltipProps) {
       style={{ pointerEvents: 'none' }}
     >
       <div
-        className="frosted-glass text-frost text-xs rounded-lg px-3 py-2 max-w-[250px] shadow-lg"
+        className="frosted-glass text-frost text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap"
       >
-        {isLoading ? (
-          <span className="inline-block animate-snowflake-spin text-frost/60 text-base">&#10052;</span>
-        ) : (
-          <span>{fact}</span>
-        )}
+        <span className="flex items-center gap-1">
+          <span>💡</span>
+          <span>Click to learn more!</span>
+        </span>
       </div>
       {/* Tooltip arrow */}
       <div
@@ -28,3 +22,4 @@ export function HoverTooltip({ fact, isLoading }: HoverTooltipProps) {
     </div>
   )
 }
+

@@ -31,5 +31,5 @@ export const config: Config = {
   geminiApiKey: process.env.GEMINI_API_KEY!,
   mongodbUri: process.env.MONGODB_URI!,
   port: parseInt(process.env.PORT || '3000', 10),
-  clientUrl: process.env.CLIENT_URL || 'http://localhost:5173'
+  clientUrl: process.env.CLIENT_URL || 'http://localhost:5174'
 };
