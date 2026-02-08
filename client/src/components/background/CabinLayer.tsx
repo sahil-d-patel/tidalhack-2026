@@ -370,73 +370,87 @@ export function GroundLayer({ isDayMode }: GroundLayerProps) {
         <ellipse cx="2" cy="12" rx="8" ry="3" fill="#ff4400" opacity="0.6" filter="url(#fireBlur)" />
         <ellipse cx="-5" cy="13" rx="5" ry="2" fill="#ff6600" opacity="0.7" />
 
-        {/* === Enhanced WIDER Flames === */}
-        {/* Outer flame glow - wider */}
-        <ellipse cx="0" cy="-10" rx="35" ry="40" fill="#ff4400" opacity="0.2" filter="url(#fireBlur)" />
+        {/* === Realistic Fire === */}
+        {/* Soft outer glow */}
+        <ellipse cx="0" cy="-8" rx="30" ry="38" fill="#ff3300" opacity="0.15" filter="url(#fireBlur)" />
 
-        {/* Main outer flame - WIDER */}
+        {/* Outermost flame - large irregular shape */}
         <path
-          d="M 0 12 Q -18 -5 -10 -32 Q -4 -48 0 -42 Q 4 -48 10 -32 Q 18 -5 0 12 Z"
-          fill="#ff4400"
+          d="M 0 14 C -6 12 -16 4 -18 -6 C -20 -16 -15 -26 -12 -34 C -9 -40 -5 -46 -3 -42 C -1 -38 -4 -30 -2 -36 C 0 -50 2 -36 4 -42 C 6 -46 10 -38 13 -32 C 16 -24 20 -14 18 -4 C 16 6 6 12 0 14 Z"
+          fill="#aa1800"
+          opacity="0.7"
+          className="animate-flame-main"
+        />
+        {/* Main flame body - asymmetric organic shape */}
+        <path
+          d="M 0 12 C -5 10 -14 2 -15 -8 C -16 -18 -11 -28 -8 -36 C -5 -44 -2 -40 0 -46 C 2 -40 5 -44 8 -36 C 11 -28 16 -18 15 -8 C 14 2 5 10 0 12 Z"
+          fill="#dd3300"
+          opacity="0.85"
+          className="animate-flame-body"
+        />
+        {/* Secondary inner flame */}
+        <path
+          d="M 0 10 C -4 8 -11 0 -10 -10 C -9 -20 -6 -30 -3 -36 C -1 -40 1 -40 3 -36 C 6 -30 9 -20 10 -10 C 11 0 4 8 0 10 Z"
+          fill="#ee5500"
           opacity="0.9"
-          className="animate-flame-main"
-        />
-        {/* Secondary flame layer - WIDER */}
-        <path
-          d="M 0 10 Q -14 -2 -7 -28 Q 0 -40 7 -28 Q 14 -2 0 10 Z"
-          fill="#ff6600"
-          opacity="0.95"
-          className="animate-flame-main"
-        />
-        {/* Inner bright flame - WIDER */}
-        <path
-          d="M 0 8 Q -10 0 -5 -20 Q 0 -30 5 -20 Q 10 0 0 8 Z"
-          fill="#ff9900"
-          opacity="0.95"
           className="animate-flame-inner"
         />
-        {/* Hot core - WIDER */}
+        {/* Bright orange layer */}
         <path
-          d="M 0 6 Q -6 -2 -3 -12 Q 0 -18 3 -12 Q 6 -2 0 6 Z"
-          fill="#ffcc00"
+          d="M 0 8 C -3 6 -8 -2 -7 -12 C -6 -22 -3 -28 0 -32 C 3 -28 6 -22 7 -12 C 8 -2 3 6 0 8 Z"
+          fill="#ff8800"
+          opacity="0.95"
+          className="animate-flame-main"
+        />
+        {/* Yellow-hot core */}
+        <path
+          d="M 0 6 C -2 4 -5 -2 -4 -10 C -3 -18 -1 -22 0 -24 C 1 -22 3 -18 4 -10 C 5 -2 2 4 0 6 Z"
+          fill="#ffbb00"
           opacity="1"
           className="animate-flame-core"
         />
-        {/* Brightest center */}
+        {/* White-hot center tip */}
         <path
-          d="M 0 4 Q -3 -1 -1.5 -7 Q 0 -11 1.5 -7 Q 3 -1 0 4 Z"
-          fill="#fff5cc"
-          opacity="0.95"
+          d="M 0 4 C -1 2 -2.5 -4 -1.5 -10 C -0.5 -14 0 -16 0 -16 C 0 -16 0.5 -14 1.5 -10 C 2.5 -4 1 2 0 4 Z"
+          fill="#ffeebb"
+          opacity="0.9"
           className="animate-flame-core"
         />
 
-        {/* Left flicker flame - WIDER */}
+        {/* Left dancing tongue - tall wispy */}
         <path
-          d="M -12 10 Q -22 -2 -14 -18 Q -9 -26 -8 -14 Q -5 -2 -12 10 Z"
-          fill="#ff5500"
-          opacity="0.75"
+          d="M -5 10 C -9 6 -17 -2 -16 -14 C -15 -22 -13 -30 -10 -26 C -8 -22 -9 -14 -7 -8 C -5 -2 -4 6 -5 10 Z"
+          fill="#ee4400"
+          opacity="0.7"
           className="animate-flame-left"
         />
-        {/* Right flicker flame - WIDER */}
+        {/* Right dancing tongue - tall wispy */}
         <path
-          d="M 12 10 Q 22 -2 14 -18 Q 9 -26 8 -14 Q 5 -2 12 10 Z"
-          fill="#ff5500"
-          opacity="0.75"
+          d="M 5 10 C 9 6 17 -2 16 -14 C 15 -22 13 -30 10 -26 C 8 -22 9 -14 7 -8 C 5 -2 4 6 5 10 Z"
+          fill="#ee4400"
+          opacity="0.7"
           className="animate-flame-right"
         />
-
-        {/* Additional side flames - WIDER */}
+        {/* Left small lick */}
         <path
-          d="M -8 8 Q -14 2 -10 -10 Q -6 -18 -5 -8 Q -3 2 -8 8 Z"
-          fill="#ff7700"
-          opacity="0.65"
+          d="M -8 8 C -12 4 -18 -4 -14 -12 C -11 -18 -9 -14 -8 -8 C -7 -2 -7 6 -8 8 Z"
+          fill="#ff6600"
+          opacity="0.55"
+          className="animate-flame-lick-l"
+        />
+        {/* Right small lick */}
+        <path
+          d="M 8 8 C 12 4 18 -4 14 -12 C 11 -18 9 -14 8 -8 C 7 -2 7 6 8 8 Z"
+          fill="#ff6600"
+          opacity="0.55"
+          className="animate-flame-lick-r"
+        />
+        {/* Stray left wisp - breaks the symmetry */}
+        <path
+          d="M -10 6 C -14 2 -20 -8 -16 -18 C -13 -24 -11 -20 -10 -14 C -9 -8 -9 4 -10 6 Z"
+          fill="#cc3300"
+          opacity="0.45"
           className="animate-flame-left"
-        />
-        <path
-          d="M 8 8 Q 14 2 10 -10 Q 6 -18 5 -8 Q 3 2 8 8 Z"
-          fill="#ff7700"
-          opacity="0.65"
-          className="animate-flame-right"
         />
 
         {/* Sparks - more of them, scattered */}
