@@ -30,6 +30,7 @@ export default function InfiniteCanvas() {
         minZoom={0.1}
         maxZoom={4}
         style={{ background: 'transparent' }}
+        proOptions={{ hideAttribution: true }}
       >
         <Controls className="!bg-background-light/80 !border-slate-600 !shadow-lg" />
       </ReactFlow>
