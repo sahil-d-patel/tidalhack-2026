@@ -9,6 +9,16 @@ import {
 } from '@xyflow/react'
 import { API_BASE, DEMO_DATA, type SubTopic, type QuizData } from '../config/api'
 
+type MasteryQuizState = {
+  parentNodeId: string
+  parentTopic: string
+  childTopics: string[]
+  quizzes: QuizData[]
+  currentQuestionIndex: number
+  correctAnswers: number
+  isLoading: boolean
+}
+
 type CanvasStore = {
   nodes: Node[]
   edges: Edge[]
@@ -17,6 +27,7 @@ type CanvasStore = {
 
   // Root topic state
   rootTopic: string | null
+  isLoadingRoot: boolean
 
   // AI interaction state
   isExpanding: boolean
@@ -25,28 +36,50 @@ type CanvasStore = {
   isLoadingFact: boolean
   demoMode: boolean
   error: string | null
-  expandedNodeIds: string[] // Zustand serializes Set as array
+  expandedNodeIds: string[]
+  learnedNodeIds: string[] // Nodes marked as "learned"
 
-  // Blizzard Mode state
+  // Blizzard Mode / Mastery Quiz state
   gameMode: 'peace' | 'blizzard'
-  blizzardQuiz: { nodeId: string; topic: string; quiz: QuizData; questionIndex: number } | null
+  masteryQuiz: MasteryQuizState | null
   warmth: number
   quizResult: 'correct' | 'wrong' | null
   blizzardComplete: boolean
+  isDead: boolean // Player died (warmth reached 0)
+
+  // Legacy (keeping for compatibility)
+  blizzardQuiz: { nodeId: string; topic: string; quiz: QuizData; questionIndex: number } | null
 
   // Sound state
   soundMuted: boolean
 
+  // Day/Night mode
+  isDayMode: boolean
+  toggleDayMode: () => void
+
   // Actions
-  setRootTopic: (topic: string) => void
+  setRootTopic: (topic: string) => Promise<void>
   toggleDemoMode: () => void
   toggleSound: () => void
   expandNode: (nodeId: string, topic: string) => Promise<void>
   fetchFunFact: (nodeId: string, topic: string) => Promise<void>
   clearHoveredFact: () => void
+  markNodeAsLearned: (nodeId: string) => void
+  checkAndStartMasteryQuiz: (parentNodeId: string) => void
+  answerMasteryQuiz: (selectedIndex: number) => void
+  retryQuiz: () => void  // Retry after death
+  exitBlizzard: () => void
+
+  // Legacy
   enterBlizzard: (nodeId: string, topic: string, quiz: QuizData) => void
   answerQuiz: (selectedIndex: number) => void
-  exitBlizzard: () => void
+
+  // UI Actions
+  activePopupId: string | null
+  isConceptsListOpen: boolean
+  setActivePopup: (nodeId: string | null) => void
+  toggleConceptsList: () => void
+  openConcept: (topic: string) => Promise<void>
 }
 
 export const useCanvasStore = create<CanvasStore>((set, get) => ({
@@ -75,31 +108,249 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
   demoMode: false,
   error: null,
   expandedNodeIds: [],
+  learnedNodeIds: [],
 
-  // Blizzard Mode state
+  // Blizzard Mode / Mastery Quiz state
   gameMode: 'peace',
-  blizzardQuiz: null,
+  masteryQuiz: null,
+  blizzardQuiz: null, // Legacy
   warmth: 50,
   quizResult: null,
   blizzardComplete: false,
+  isDead: false,
 
   // Sound state
   soundMuted: true,
+  isLoadingRoot: false,
+
+  // Day/Night mode
+  isDayMode: false,
+  toggleDayMode: () => {
+    set((state) => ({ isDayMode: !state.isDayMode }))
+  },
+
+  // UI State
+  activePopupId: null,
+  isConceptsListOpen: false,
+
+  setActivePopup: (nodeId: string | null) => {
+    set({ activePopupId: nodeId })
+  },
+
+  toggleConceptsList: () => {
+    set((state) => ({ isConceptsListOpen: !state.isConceptsListOpen }))
+  },
 
   // Set the root topic and create the initial node
-  setRootTopic: (topic: string) => {
-    const rootNode: Node = {
-      id: 'root',
-      type: 'snowball',
-      position: { x: 400, y: 50 },
-      data: { label: topic },
+  setRootTopic: async (topic: string) => {
+    const { demoMode } = get()
+
+    // Set loading state
+    set({ isLoadingRoot: true })
+
+    try {
+      let funFact: string
+
+      if (demoMode) {
+        const demoData = DEMO_DATA[topic]
+        if (demoData?.funFact) {
+          funFact = demoData.funFact
+        } else {
+          // Fallback demo fun fact
+          funFact = 'Explore this fascinating topic by clicking to expand to see more details!'
+        }
+        // Simulate loading delay for realism in demo mode
+        await new Promise(resolve => setTimeout(resolve, 800))
+      } else {
+        // Fetch from live API
+        const response = await fetch(`${API_BASE}/hover`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
+
+        const data = await response.json()
+        funFact = data.data.funFact
+      }
+
+      const rootNode: Node = {
+        id: 'root',
+        type: 'snowball',
+        position: { x: 400, y: 50 },
+        data: { label: topic, funFact },
+      }
+
+      set({
+        rootTopic: topic,
+        nodes: [rootNode],
+        edges: [],
+        expandedNodeIds: [],
+        learnedNodeIds: [],
+        masteryQuiz: null,
+        gameMode: 'peace',
+        isLoadingRoot: false,
+      })
+    } catch (error) {
+      console.error('Error fetching root topic:', error)
+      // Fallback in case of error
+      const rootNode: Node = {
+        id: 'root',
+        type: 'snowball',
+        position: { x: 400, y: 50 },
+        data: { label: topic, funFact: 'Click to explore this topic further!' },
+      }
+      set({
+        rootTopic: topic,
+        nodes: [rootNode],
+        edges: [],
+        expandedNodeIds: [],
+        learnedNodeIds: [],
+        masteryQuiz: null,
+        gameMode: 'peace',
+        isLoadingRoot: false,
+      })
     }
-    set({
-      rootTopic: topic,
-      nodes: [rootNode],
-      edges: [],
-      expandedNodeIds: [],
-    })
+  },
+
+  // Open a concept from history - rebuild full previously-explored tree
+  openConcept: async (topic: string) => {
+    const { demoMode } = get()
+
+    set({ isLoadingRoot: true })
+
+    try {
+      if (demoMode) {
+        // In demo mode, just set root + expand one level
+        await get().setRootTopic(topic)
+        await get().expandNode('root', topic)
+        return
+      }
+
+      // Fetch full cached tree from server
+      const response = await fetch(`${API_BASE}/tree/${encodeURIComponent(topic)}`)
+
+      if (!response.ok) {
+        // Fallback to simple root + expand
+        await get().setRootTopic(topic)
+        await get().expandNode('root', topic)
+        return
+      }
+
+      const { data: tree } = await response.json()
+
+      // Layout constants
+      const NODE_WIDTH = 200
+      const HORIZONTAL_SPACING = 50
+      const VERTICAL_SPACING = 180
+
+      // Recursively build flat node/edge arrays from tree
+      const nodes: Node[] = []
+      const edges: Edge[] = []
+      const expandedNodeIds: string[] = []
+
+      const buildNodesFromTree = (
+        treeNode: { label: string; funFact: string; quiz: any; children: any[] },
+        nodeId: string,
+        parentTopic?: string
+      ) => {
+        nodes.push({
+          id: nodeId,
+          type: 'snowball',
+          position: { x: 0, y: 0 }, // will be repositioned
+          data: {
+            label: treeNode.label,
+            funFact: treeNode.funFact || '',
+            quiz: treeNode.quiz,
+            parentTopic,
+          },
+        })
+
+        if (treeNode.children && treeNode.children.length > 0) {
+          expandedNodeIds.push(nodeId)
+
+          treeNode.children.forEach((child: any, i: number) => {
+            const childId = `${nodeId}-${i}`
+            edges.push({
+              id: `e${nodeId}-${childId}`,
+              source: nodeId,
+              target: childId,
+              type: 'footprint',
+            })
+            buildNodesFromTree(child, childId, treeNode.label)
+          })
+        }
+      }
+
+      buildNodesFromTree(tree, 'root')
+
+      // Build children map for layout
+      const childrenMap = new Map<string, string[]>()
+      edges.forEach((edge) => {
+        const children = childrenMap.get(edge.source) || []
+        children.push(edge.target)
+        childrenMap.set(edge.source, children)
+      })
+
+      // Calculate subtree widths
+      const calcSubtreeWidth = (nodeId: string): number => {
+        const children = childrenMap.get(nodeId) || []
+        if (children.length === 0) return NODE_WIDTH
+        let totalWidth = 0
+        children.forEach((childId, index) => {
+          totalWidth += calcSubtreeWidth(childId)
+          if (index < children.length - 1) totalWidth += HORIZONTAL_SPACING
+        })
+        return Math.max(NODE_WIDTH, totalWidth)
+      }
+
+      // Position subtrees
+      const nodeMap = new Map<string, Node>()
+      nodes.forEach((n) => nodeMap.set(n.id, n))
+
+      const positionSubtree = (nodeId: string, startX: number, y: number) => {
+        const node = nodeMap.get(nodeId)
+        if (!node) return
+
+        const subtreeWidth = calcSubtreeWidth(nodeId)
+        const children = childrenMap.get(nodeId) || []
+
+        node.position = {
+          x: startX + subtreeWidth / 2 - NODE_WIDTH / 2,
+          y,
+        }
+
+        if (children.length > 0) {
+          let childStartX = startX
+          children.forEach((childId) => {
+            const childWidth = calcSubtreeWidth(childId)
+            positionSubtree(childId, childStartX, y + VERTICAL_SPACING)
+            childStartX += childWidth + HORIZONTAL_SPACING
+          })
+        }
+      }
+
+      positionSubtree('root', 0, 50)
+
+      set({
+        rootTopic: topic,
+        nodes,
+        edges,
+        expandedNodeIds,
+        learnedNodeIds: [],
+        masteryQuiz: null,
+        gameMode: 'peace',
+        isLoadingRoot: false,
+      })
+    } catch (error) {
+      console.error('Error loading tree:', error)
+      // Fallback
+      await get().setRootTopic(topic)
+      await get().expandNode('root', topic)
+    }
   },
 
   // Toggle demo mode
@@ -236,7 +487,7 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
         }
       }
 
-      // Generate new nodes with calculated positions
+      // Generate new nodes with calculated positions (including pre-loaded fun facts)
       const newNodes: Node[] = subTopics.map((subTopic, i) => ({
         id: `${nodeId}-${i}`,
         type: 'snowball',
@@ -246,6 +497,7 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
         },
         data: {
           label: subTopic.label,
+          funFact: subTopic.funFact,
           quiz: subTopic.quiz,
           parentTopic: topic,
         },
@@ -355,7 +607,17 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
 
   // Fetch fun fact for hovered node
   fetchFunFact: async (nodeId: string, topic: string) => {
-    const { demoMode } = get()
+    const { nodes, demoMode } = get()
+
+    // Check if we already have the fact on the node data
+    const node = nodes.find((n) => n.id === nodeId)
+    if (node?.data?.funFact) {
+      set({
+        hoveredFact: { nodeId, fact: node.data.funFact as string },
+        isLoadingFact: false,
+      })
+      return
+    }
 
     set({ isLoadingFact: true })
 
@@ -363,15 +625,21 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
       let funFact: string
 
       if (demoMode) {
-        // Use pre-cached demo data
-        const demoData = DEMO_DATA[topic]
-        if (demoData) {
-          funFact = demoData.funFact
-        } else {
-          funFact = 'Explore this fascinating topic by clicking to expand!'
+        // Use pre-cached demo data logic (fallback for root mostly)
+        // Note: Individual nodes usually have funFact in data now
+        funFact = 'Explore this fascinating topic by clicking to expand to see more details!'
+
+        // Try to find if this is a subtopic we know about
+        // (This is a basic fallback search)
+        for (const key in DEMO_DATA) {
+          const sub = DEMO_DATA[key].subTopics.find(s => s.label === topic)
+          if (sub?.funFact) {
+            funFact = sub.funFact
+            break
+          }
         }
       } else {
-        // Fetch from live API
+        // Fetch from live API (fallback for root node or legacy)
         const response = await fetch(`${API_BASE}/hover`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -384,6 +652,15 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
 
         const data = await response.json()
         funFact = data.data.funFact
+
+        // Store it so we don't fetch again
+        set({
+          nodes: nodes.map(n =>
+            n.id === nodeId
+              ? { ...n, data: { ...n.data, funFact } }
+              : n
+          )
+        })
       }
 
       set({
@@ -407,7 +684,246 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
     set({ hoveredFact: null })
   },
 
-  // Enter Blizzard Mode
+  // Mark a node as learned (turns green)
+  // Also marks all children recursively as learned
+  markNodeAsLearned: (nodeId: string) => {
+    const { learnedNodeIds, nodes, edges } = get()
+
+    if (learnedNodeIds.includes(nodeId)) return
+
+    // Helper function to get all descendant node IDs recursively
+    const getAllDescendants = (parentId: string): string[] => {
+      const childEdges = edges.filter(e => e.source === parentId)
+      const childIds = childEdges.map(e => e.target)
+
+      let allDescendants: string[] = [...childIds]
+      for (const childId of childIds) {
+        allDescendants = [...allDescendants, ...getAllDescendants(childId)]
+      }
+      return allDescendants
+    }
+
+    // Get all descendants of this node
+    const descendants = getAllDescendants(nodeId)
+
+    // Mark this node and all descendants as learned
+    const nodesToMark = [nodeId, ...descendants]
+    const newLearnedNodeIds = [...learnedNodeIds]
+
+    for (const id of nodesToMark) {
+      if (!newLearnedNodeIds.includes(id)) {
+        newLearnedNodeIds.push(id)
+      }
+    }
+
+    set({ learnedNodeIds: newLearnedNodeIds })
+
+    console.log(`[Learn] Marked ${nodesToMark.length} node(s) as learned (${nodeId} + ${descendants.length} children)`)
+
+    // Check if this is the ROOT node being marked as learned
+    // Only the root node triggers the mastery quiz
+    if (nodeId === 'root') {
+      console.log('[Quiz] Root node marked as learned - starting mastery quiz!')
+
+      // Get all learned child topics for the quiz
+      const childEdges = edges.filter(e => e.source === 'root')
+      const childTopics = childEdges.map(e => {
+        const node = nodes.find(n => n.id === e.target)
+        return node?.data?.label as string
+      }).filter(Boolean)
+
+      if (childTopics.length > 0) {
+        // Start mastery quiz after a short delay
+        setTimeout(() => {
+          get().checkAndStartMasteryQuiz('root')
+        }, 500)
+      }
+    }
+    // For non-root nodes, just mark as learned without triggering quiz
+  },
+
+  // Check and start mastery quiz for a parent node
+  checkAndStartMasteryQuiz: async (parentNodeId: string) => {
+    const { nodes, edges, demoMode, rootTopic } = get()
+
+    const parentNode = nodes.find(n => n.id === parentNodeId)
+    if (!parentNode) return
+
+    const parentTopic = parentNode.data.label as string
+    const siblingEdges = edges.filter(e => e.source === parentNodeId)
+    const childTopics = siblingEdges.map(e => {
+      const node = nodes.find(n => n.id === e.target)
+      return node?.data?.label as string
+    }).filter(Boolean)
+
+    console.log(`[Mastery Quiz] Starting quiz for "${parentTopic}" with children:`, childTopics)
+
+    // Start loading state
+    set({
+      gameMode: 'blizzard',
+      masteryQuiz: {
+        parentNodeId,
+        parentTopic,
+        childTopics,
+        quizzes: [],
+        currentQuestionIndex: 0,
+        correctAnswers: 0,
+        isLoading: true,
+      },
+      warmth: 50,
+      blizzardComplete: false,
+      quizResult: null,
+    })
+
+    try {
+      let quizzes: QuizData[] = []
+
+      if (demoMode) {
+        // Use demo quizzes
+        const demoQuizzes: QuizData[] = []
+        const allTopics = [parentTopic, ...childTopics]
+
+        for (const topic of allTopics) {
+          const demoData = DEMO_DATA[topic]
+          if (demoData?.subTopics) {
+            const topicQuiz = demoData.subTopics.find(st => st.quiz)?.quiz
+            if (topicQuiz) {
+              demoQuizzes.push(topicQuiz)
+            }
+          }
+        }
+
+        // Create fallback quizzes if needed
+        while (demoQuizzes.length < 5) {
+          demoQuizzes.push({
+            question: `What have you learned about ${allTopics[demoQuizzes.length % allTopics.length]}?`,
+            options: ['Everything!', 'A lot', 'Some things', 'I need to review'],
+            correctIndex: 0,
+          })
+        }
+
+        quizzes = demoQuizzes.slice(0, 5)
+      } else {
+        // Fetch from API
+        const response = await fetch(`${API_BASE}/mastery`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic: parentTopic, childTopics, rootTopic }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
+
+        const data = await response.json()
+        quizzes = data.data.quizzes
+      }
+
+      set(state => ({
+        masteryQuiz: state.masteryQuiz ? {
+          ...state.masteryQuiz,
+          quizzes,
+          isLoading: false,
+        } : null,
+      }))
+    } catch (error) {
+      console.error('Error fetching mastery quiz:', error)
+      // Exit blizzard mode on error
+      set({
+        gameMode: 'peace',
+        masteryQuiz: null,
+        error: 'Failed to load mastery quiz',
+      })
+    }
+  },
+
+  // Answer a mastery quiz question
+  answerMasteryQuiz: (selectedIndex: number) => {
+    const { masteryQuiz, warmth } = get()
+
+    if (!masteryQuiz || masteryQuiz.isLoading) return
+
+    const currentQuiz = masteryQuiz.quizzes[masteryQuiz.currentQuestionIndex]
+    if (!currentQuiz) return
+
+    const isCorrect = selectedIndex === currentQuiz.correctIndex
+    const newWarmth = isCorrect
+      ? Math.min(100, warmth + 15)
+      : Math.max(0, warmth - 15)
+    const newCorrectAnswers = isCorrect
+      ? masteryQuiz.correctAnswers + 1
+      : masteryQuiz.correctAnswers
+
+    set({
+      warmth: newWarmth,
+      quizResult: isCorrect ? 'correct' : 'wrong',
+    })
+
+    // Check if player died (warmth reached 0)
+    if (newWarmth === 0) {
+      console.log('[Quiz] Player died! Warmth reached 0')
+      setTimeout(() => {
+        set({
+          isDead: true,
+          quizResult: null,
+        })
+      }, 1000)
+      return
+    }
+
+    // Move to next question or complete after delay
+    setTimeout(() => {
+      const nextIndex = masteryQuiz.currentQuestionIndex + 1
+
+      if (nextIndex >= masteryQuiz.quizzes.length) {
+        // Quiz complete!
+        set({
+          blizzardComplete: true,
+          quizResult: null,
+          masteryQuiz: {
+            ...masteryQuiz,
+            correctAnswers: newCorrectAnswers,
+            currentQuestionIndex: nextIndex,
+          },
+        })
+      } else {
+        // Next question
+        set({
+          quizResult: null,
+          masteryQuiz: {
+            ...masteryQuiz,
+            currentQuestionIndex: nextIndex,
+            correctAnswers: newCorrectAnswers,
+          },
+        })
+      }
+    }, 1000)
+  },
+
+  // Retry quiz after death
+  retryQuiz: () => {
+    const { masteryQuiz } = get()
+
+    if (!masteryQuiz) return
+
+    console.log('[Quiz] Retrying quiz after death')
+
+    // Reset the quiz to the beginning
+    set({
+      isDead: false,
+      warmth: 50,
+      quizResult: null,
+      blizzardComplete: false,
+      masteryQuiz: {
+        ...masteryQuiz,
+        currentQuestionIndex: 0,
+        correctAnswers: 0,
+        isLoading: false,
+      },
+    })
+  },
+
+  // Enter Blizzard Mode (Legacy)
   enterBlizzard: (nodeId: string, topic: string, quiz: QuizData) => {
     set({
       gameMode: 'blizzard',
@@ -418,7 +934,7 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
     })
   },
 
-  // Answer quiz question
+  // Answer quiz question (Legacy)
   answerQuiz: (selectedIndex: number) => {
     const { blizzardQuiz, warmth } = get()
 
@@ -446,8 +962,11 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
     set({
       gameMode: 'peace',
       blizzardQuiz: null,
+      masteryQuiz: null,
       quizResult: null,
       blizzardComplete: false,
+      isDead: false,
     })
   },
 }))
+

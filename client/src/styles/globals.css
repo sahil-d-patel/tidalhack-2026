@@ -16,31 +16,70 @@
     min-height: 100vh;
   }
 
+  /* Force React Flow to be fully transparent so parallax background shows through */
+  .react-flow,
+  .react-flow__renderer,
+  .react-flow__pane {
+    background: transparent !important;
+  }
+
   .blizzard-vignette {
     box-shadow: inset 0 0 150px 60px rgba(0, 0, 0, 0.7);
     transition: box-shadow 1.5s ease-in-out;
   }
 
+  /* === Quiz animations === */
   @keyframes scale-correct {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.1);
+    }
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-2px); }
-    75% { transform: translateX(2px); }
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-2px);
+    }
+
+    75% {
+      transform: translateX(2px);
+    }
   }
 
-  @keyframes snowflake-spin {
-    0% {
-      transform: rotate(0deg) scale(1);
-    }
-    50% {
-      transform: rotate(180deg) scale(1.15);
-    }
+  @keyframes node-loading-pulse {
+
+    0%,
     100% {
-      transform: rotate(360deg) scale(1);
+      transform: scale(1);
+      opacity: 0.85;
+    }
+
+    50% {
+      transform: scale(1.12);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bounce-slow {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
     }
   }
 
@@ -52,10 +91,15 @@
     animation: shake 0.3s ease-in-out;
   }
 
-  .animate-snowflake-spin {
-    animation: snowflake-spin 1.5s ease-in-out infinite;
+  .animate-node-loading-pulse {
+    animation: node-loading-pulse 1.2s ease-in-out infinite;
   }
 
+  .animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+  }
+
+  /* === Frosted glass effect === */
   .frosted-glass {
     background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(12px);
@@ -64,17 +108,229 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
-  @keyframes bounce-slow {
-    0%, 100% {
+  /* === Sky & background animations === */
+  @keyframes twinkle {
+
+    0%,
+    100% {
+      opacity: var(--star-opacity, 0.6);
+    }
+
+    50% {
+      opacity: 0.1;
+    }
+  }
+
+  @keyframes drift-slow {
+    0% {
+      transform: translateX(0);
+    }
+
+    50% {
+      transform: translateX(60px);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes drift-medium {
+    0% {
+      transform: translateX(0);
+    }
+
+    50% {
+      transform: translateX(-40px);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes lamp-glow {
+
+    0%,
+    100% {
+      opacity: 0.15;
+    }
+
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  .animate-twinkle {
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  .animate-drift-slow {
+    animation: drift-slow 120s ease-in-out infinite;
+  }
+
+  .animate-drift-medium {
+    animation: drift-medium 80s ease-in-out infinite;
+  }
+
+  .animate-lamp-glow {
+    animation: lamp-glow 4s ease-in-out infinite;
+  }
+
+  /* === Node glow effect === */
+  @keyframes node-pulse {
+
+    0%,
+    100% {
+      box-shadow: 0 0 12px 2px rgba(251, 191, 36, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    50% {
+      box-shadow: 0 0 18px 4px rgba(251, 191, 36, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .animate-node-pulse {
+    animation: node-pulse 4s ease-in-out infinite;
+  }
+
+  /* === Bear waddle animation === */
+  @keyframes bear-waddle {
+
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+
+    25% {
+      transform: rotate(2deg);
+    }
+
+    75% {
+      transform: rotate(-2deg);
+    }
+  }
+
+  /* === Campfire flame animations - SIMPLE OPACITY FLICKER === */
+  @keyframes flame-main {
+
+    0%,
+    100% {
+      opacity: 0.9;
+    }
+
+    50% {
+      opacity: 0.75;
+    }
+  }
+
+  @keyframes flame-inner {
+
+    0%,
+    100% {
+      opacity: 0.95;
+    }
+
+    33% {
+      opacity: 0.85;
+    }
+
+    66% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes flame-core {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.85;
+    }
+  }
+
+  @keyframes flame-flicker {
+
+    0%,
+    100% {
+      opacity: 0.7;
+    }
+
+    25% {
+      opacity: 0.5;
+    }
+
+    50% {
+      opacity: 0.8;
+    }
+
+    75% {
+      opacity: 0.55;
+    }
+  }
+
+  @keyframes spark-rise {
+    0% {
+      opacity: 0.8;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes smoke-rise {
+    0% {
+      opacity: 0.2;
       transform: translateY(0);
     }
-    50% {
-      transform: translateY(-10px);
+
+    100% {
+      opacity: 0;
+      transform: translateY(-40px);
     }
   }
 
-  .animate-bounce-slow {
-    animation: bounce-slow 3s ease-in-out infinite;
+  .animate-flame-main {
+    animation: flame-main 0.6s ease-in-out infinite;
+  }
+
+  .animate-flame-inner {
+    animation: flame-inner 0.4s ease-in-out infinite;
+  }
+
+  .animate-flame-core {
+    animation: flame-core 0.35s ease-in-out infinite;
+  }
+
+  .animate-flame-left {
+    animation: flame-flicker 0.7s ease-in-out infinite;
+  }
+
+  .animate-flame-right {
+    animation: flame-flicker 0.8s ease-in-out infinite 0.2s;
+  }
+
+  .animate-spark-1 {
+    animation: spark-rise 2s ease-out infinite;
+  }
+
+  .animate-spark-2 {
+    animation: spark-rise 2.5s ease-out infinite 0.6s;
+  }
+
+  .animate-spark-3 {
+    animation: spark-rise 3s ease-out infinite 1.2s;
+  }
+
+  .animate-smoke-wisp {
+    animation: smoke-rise 5s ease-out infinite;
   }
 }
-

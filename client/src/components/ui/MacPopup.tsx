@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react'
+import { useCanvasStore } from '../../state/canvasStore'
 
 type MacPopupProps = {
+    nodeId: string
     title: string
     content: string
     isLoading: boolean
+    isLearned: boolean
+    isExpanded: boolean
     onClose: () => void
     onExpand: () => void
 }
 
-export function MacPopup({ title, content, isLoading, onClose, onExpand }: MacPopupProps) {
+export function MacPopup({ nodeId, title, content, isLoading, isLearned, isExpanded, onClose, onExpand }: MacPopupProps) {
     const [isVisible, setIsVisible] = useState(false)
+    const markNodeAsLearned = useCanvasStore((state) => state.markNodeAsLearned)
 
     // Animate in on mount
     useEffect(() => {
@@ -25,6 +30,12 @@ export function MacPopup({ title, content, isLoading, onClose, onExpand }: MacPo
     const handleExpand = () => {
         setIsVisible(false)
         setTimeout(onExpand, 200) // Wait for animation to finish
+    }
+
+    const handleMarkAsLearned = () => {
+        markNodeAsLearned(nodeId)
+        setIsVisible(false)
+        setTimeout(onClose, 200)
     }
 
     return (
@@ -62,7 +73,7 @@ export function MacPopup({ title, content, isLoading, onClose, onExpand }: MacPo
 
                     {/* Title */}
                     <span className="ml-2 text-xs text-slate-300 font-medium truncate flex-1 text-center pr-8">
-                        {title}
+                        {isLearned && '✓ '}{title}
                     </span>
                 </div>
 
@@ -76,15 +87,54 @@ export function MacPopup({ title, content, isLoading, onClose, onExpand }: MacPo
                     ) : (
                         <>
                             <p className="text-slate-200 text-sm leading-relaxed mb-3">{content}</p>
-                            <button
-                                onClick={handleExpand}
-                                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 
-                           text-white text-sm font-medium py-2 px-4 rounded-md transition-all 
-                           shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2"
-                            >
-                                <span>🔍</span>
-                                <span>Explore Topic</span>
-                            </button>
+
+                            <div className="flex flex-col gap-2">
+                                {/* Mark as Learned button - only show if not already learned */}
+                                {!isLearned && (
+                                    <button
+                                        onClick={handleMarkAsLearned}
+                                        className="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 
+                                           text-white text-sm font-medium py-2 px-4 rounded-md transition-all 
+                                           shadow-lg hover:shadow-emerald-500/25 flex items-center justify-center gap-2"
+                                    >
+                                        <span>✓</span>
+                                        <span>Mark as Learned</span>
+                                    </button>
+                                )}
+
+                                {/* Already learned message */}
+                                {isLearned && (
+                                    <div className="w-full bg-emerald-600/20 border border-emerald-500/30
+                                           text-emerald-400 text-sm font-medium py-2 px-4 rounded-md 
+                                           flex items-center justify-center gap-2">
+                                        <span>✓</span>
+                                        <span>Already Learned!</span>
+                                    </div>
+                                )}
+
+                                {/* Explore Topic button - only show if not already expanded */}
+                                {!isExpanded && (
+                                    <button
+                                        onClick={handleExpand}
+                                        className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 
+                                           text-white text-sm font-medium py-2 px-4 rounded-md transition-all 
+                                           shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2"
+                                    >
+                                        <span>🔍</span>
+                                        <span>Explore Topic</span>
+                                    </button>
+                                )}
+
+                                {/* Already expanded message */}
+                                {isExpanded && (
+                                    <div className="w-full bg-amber-600/20 border border-amber-500/30
+                                           text-amber-400 text-sm font-medium py-2 px-4 rounded-md 
+                                           flex items-center justify-center gap-2">
+                                        <span>🌳</span>
+                                        <span>Already Expanded</span>
+                                    </div>
+                                )}
+                            </div>
                         </>
                     )}
                 </div>
@@ -102,4 +152,5 @@ export function MacPopup({ title, content, isLoading, onClose, onExpand }: MacPo
         </div>
     )
 }
+
 

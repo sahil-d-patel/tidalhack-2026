@@ -2,8 +2,11 @@ import { useEffect, useRef } from 'react'
 import { ParallaxBackground } from './components/background/ParallaxBackground'
 import { SnowParticles } from './components/background/SnowParticles'
 import InfiniteCanvas from './components/canvas/InfiniteCanvas'
-import { DemoToggle } from './components/ui/DemoToggle'
+
+import { DayNightToggle } from './components/ui/DayNightToggle'
 import { SoundToggle } from './components/ui/SoundToggle'
+import { ConceptsToggle } from './components/ui/ConceptsToggle'
+import { ConceptsList } from './components/ui/ConceptsList'
 import { ThermometerHUD } from './components/ui/ThermometerHUD'
 import { QuizCard } from './components/ui/QuizCard'
 import { FrostOverlay } from './components/ui/FrostOverlay'
@@ -67,6 +70,9 @@ function App() {
       {/* Layer 30: Frost Overlay */}
       <FrostOverlay />
 
+      {/* Layer 40: Concepts List Overlay */}
+      <ConceptsList />
+
       {/* Layer 40: Quiz Card */}
       <QuizCard />
 
@@ -81,18 +87,16 @@ function App() {
         <h1 className="text-2xl font-heading font-bold text-accent-warm/80 drop-shadow-lg">
           FRACTAL
         </h1>
-        <p className="text-xs font-body text-frost/40">
-          Interactive Knowledge Explorer
-        </p>
       </div>
 
-      {/* Demo Mode Toggle + Sound Toggle */}
+      {/* Sound Toggle + Concepts Toggle */}
       <div
         className="fixed top-8 right-8 pointer-events-auto flex items-center gap-2"
         style={{ zIndex: 'var(--z-hud)' }}
       >
+        <DayNightToggle />
+        <ConceptsToggle />
         <SoundToggle />
-        <DemoToggle />
       </div>
 
       {/* Welcome Screen - shown when no root topic is set */}
@@ -102,4 +106,3 @@ function App() {
 }
 
 export default App
-

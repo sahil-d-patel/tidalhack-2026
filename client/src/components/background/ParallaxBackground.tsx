@@ -1,10 +1,11 @@
-import { HillsLayer } from './HillsLayer';
-import { TreesLayer } from './TreesLayer';
-import { CabinLayer } from './CabinLayer';
+import { SkyLayer } from './HillsLayer';
+import { NeighborhoodLayer } from './TreesLayer';
+import { GroundLayer } from './CabinLayer';
 import { useCanvasStore } from '../../state/canvasStore';
 
 export function ParallaxBackground() {
   const gameMode = useCanvasStore((state) => state.gameMode);
+  const isDayMode = useCanvasStore((state) => state.isDayMode);
   const isBlizzard = gameMode === 'blizzard';
 
   return (
@@ -16,49 +17,56 @@ export function ParallaxBackground() {
         perspectiveOrigin: 'center center',
       }}
     >
-      {/* Sky gradient base */}
+      {/* Sky gradient base - rich layered gradients */}
       <div
-        className={`absolute inset-0 bg-gradient-to-b ${
-          isBlizzard
-            ? 'from-[#070d1a] to-[#0f172a]'
-            : 'from-background-dark to-background'
-        }`}
-        style={{ transition: 'all 1.5s ease-in-out' }}
+        className="absolute inset-0"
+        style={{
+          background: isBlizzard
+            ? 'linear-gradient(to bottom, #040610, #0a0e20)'
+            : isDayMode
+              ? 'linear-gradient(to bottom, #4a90d9, #87CEEB, #b8dff0)'
+              : 'linear-gradient(to bottom, #0a0a1a 0%, #0f1428 15%, #1a1a3a 30%, #252550 50%, #3a3065 70%, #4a3a70 85%, #2a2545 100%)',
+          transition: 'all 1s ease-in-out',
+        }}
       />
 
-      {/* Hills layer - furthest back */}
+      {/* Sky layer - stars/sun, moon/sun, clouds (furthest back) */}
       <div
         className="absolute inset-0"
         style={{
           transform: 'translateZ(-2px) scale(3)',
           transformStyle: 'preserve-3d',
+          opacity: isBlizzard ? 0.3 : 1,
+          transition: 'opacity 1.5s ease-in-out',
         }}
       >
-        <HillsLayer />
+        <SkyLayer isDayMode={isDayMode} />
       </div>
 
-      {/* Trees layer - middle depth */}
+      {/* Neighborhood layer - houses + solid ground (middle depth) */}
       <div
         className="absolute inset-0"
         style={{
           transform: 'translateZ(-1px) scale(2)',
           transformStyle: 'preserve-3d',
+          opacity: isBlizzard ? 0.15 : 1,
+          transition: 'opacity 1.5s ease-in-out',
         }}
       >
-        <TreesLayer />
+        <NeighborhoodLayer isDayMode={isDayMode} />
       </div>
 
-      {/* Cabin layer - nearest */}
+      {/* Ground layer - foreground campfire, snow details (nearest) */}
       <div
         className="absolute inset-0"
         style={{
           transform: 'translateZ(-0.5px) scale(1.5)',
           transformStyle: 'preserve-3d',
-          opacity: isBlizzard ? 0.15 : 1,
+          opacity: isBlizzard ? 0.2 : 1,
           transition: 'opacity 1.5s ease-in-out',
         }}
       >
-        <CabinLayer />
+        <GroundLayer isDayMode={isDayMode} />
       </div>
     </div>
   );

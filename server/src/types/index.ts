@@ -6,6 +6,7 @@ export interface QuizData {
 
 export interface SubTopic {
   label: string;
+  funFact: string;
   quiz: QuizData | null;
 }
 
@@ -14,5 +15,10 @@ export interface ScoutResponse {
 }
 
 export interface HoverResponse {
+  funFact: string;
+}
+
+export interface SubTopicWithFact {
+  label: string;
   funFact: string;
 }

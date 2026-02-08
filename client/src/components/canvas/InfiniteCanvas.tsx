@@ -1,4 +1,4 @@
-import { ReactFlow, Background, Controls } from '@xyflow/react'
+import { ReactFlow, Controls } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useCanvasStore } from '../../state/canvasStore'
 import SnowballNode from './nodes/SnowballNode'
@@ -29,8 +29,8 @@ export default function InfiniteCanvas() {
         fitView
         minZoom={0.1}
         maxZoom={4}
+        style={{ background: 'transparent' }}
       >
-        <Background color="#334155" gap={40} size={1} style={{ opacity: 0.3 }} />
         <Controls className="!bg-background-light/80 !border-slate-600 !shadow-lg" />
       </ReactFlow>
     </div>
