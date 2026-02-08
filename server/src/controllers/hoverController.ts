@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
-import { generateFunFact } from '../services/gemini.js';
+import { generateFunFact as generateFunFactGemini } from '../services/gemini.js';
+import { generateFunFact as generateFunFactFeatherless } from '../services/featherless.js';
 import * as cacheService from '../services/cache.js';
+import { config } from '../config/env.js';
 import type { HoverResponse } from '../types/index.js';
 
 export async function getFunFact(req: Request, res: Response): Promise<void> {
@@ -26,8 +28,10 @@ export async function getFunFact(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // Generate new fun fact
-    const funFact = await generateFunFact(topic);
+    // Generate new fun fact using Gemini or fallback to Featherless
+    const funFact = config.useGemini
+      ? await generateFunFactGemini(topic)
+      : await generateFunFactFeatherless(topic);
 
     const responseData: HoverResponse = { funFact };
 
@@ -46,3 +50,4 @@ export async function getFunFact(req: Request, res: Response): Promise<void> {
     });
   }
 }
+

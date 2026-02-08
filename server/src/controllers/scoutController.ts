@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { generateSubTopics } from '../services/featherless.js';
-import { generateQuiz } from '../services/gemini.js';
+import { generateSubTopics, generateQuiz as generateQuizFeatherless } from '../services/featherless.js';
+import { generateQuiz as generateQuizGemini } from '../services/gemini.js';
 import * as cacheService from '../services/cache.js';
+import { config } from '../config/env.js';
 import type { SubTopic, ScoutResponse } from '../types/index.js';
 
 export async function expandNode(req: Request, res: Response): Promise<void> {
@@ -30,6 +31,8 @@ export async function expandNode(req: Request, res: Response): Promise<void> {
   const subTopicLabels = await generateSubTopics(topic);
 
   // Generate quiz for each sub-topic in parallel
+  // Use Gemini if enabled, otherwise fallback to Featherless
+  const generateQuiz = config.useGemini ? generateQuizGemini : generateQuizFeatherless;
   const quizPromises = subTopicLabels.map(label => generateQuiz(label));
   const quizzes = await Promise.all(quizPromises);
 
@@ -49,3 +52,4 @@ export async function expandNode(req: Request, res: Response): Promise<void> {
     source: 'api'
   });
 }
+
